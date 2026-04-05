@@ -19,6 +19,10 @@ export {
   SERIALIZERS,
 } from './lib/serializers';
 
-// Factory functions
+// Factory functions (reactive forms)
 export { paramControl } from './lib/param-control';
 export { paramGroup } from './lib/param-group';
+
+// Factory functions (signals)
+export { paramSignal } from './lib/param-signal';
+export { paramSignalGroup } from './lib/param-signal-group';

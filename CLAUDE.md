@@ -1,6 +1,6 @@
 # ngx-param-control
 
-An Angular 17+ library that syncs reactive form controls with URL query parameters via Angular's Router.
+An Angular 17+ library that syncs reactive form controls **and signals** with URL query parameters via Angular's Router.
 
 ## Core Behavior
 
@@ -19,11 +19,15 @@ An Angular 17+ library that syncs reactive form controls with URL query paramete
 
 - Supports individual `FormControl` binding to a single query param.
 - Supports `FormGroup` binding, which maps each control in the group to its own query param.
+- Supports individual `WritableSignal` binding to a single query param (signals API).
+- Supports grouped signal binding, returning a plain record of `WritableSignal`s (signals API).
 
 ## API Surface
 
-- A `formControl = paramControl(paramName, options?)` function (or similar factory) that returns a `FormControl` already wired to the given query param.
-- A `formGroup = paramGroup(config)` function that returns a `FormGroup` with each control wired to its respective param.
+- `paramControl(paramName, options?)` — returns a `FormControl<T | null>` wired to the given query param.
+- `paramGroup(config)` — returns a `FormGroup` with each control wired to its respective param.
+- `paramSignal(paramName, options?)` — returns a `WritableSignal<T | null>` wired to the given query param.
+- `paramSignalGroup(config)` — returns a plain object of `WritableSignal`s, each wired to its respective param.
 - Options include: `defaultValue`, `serializer`, `debounceMs`, `pushState` (boolean).
 
 ## Constraints
@@ -45,6 +49,9 @@ An Angular 17+ library that syncs reactive form controls with URL query paramete
 | 5 | Public API (`public-api.ts`), clean up stub files | ✅ Done |
 | 6 | Unit tests for serializers, `paramControl`, `paramGroup` | ✅ Done |
 | 7 | Build library and verify | ✅ Done |
+| 8 | `paramSignal()` factory — two-way sync via `WritableSignal`, `toObservable`, SSR guard | ✅ Done |
+| 9 | `paramSignalGroup()` factory | ✅ Done |
+| 10 | Unit tests for `paramSignal`, `paramSignalGroup` | ⬜ Todo |
 
 ---
 
@@ -59,6 +66,8 @@ projects/ngx-param-control/src/
     serializers.ts                ← STRING / NUMBER / BOOLEAN / JSON_SERIALIZER + SERIALIZERS map
     param-control.ts              ← paramControl() factory
     param-group.ts                ← paramGroup() factory
+    param-signal.ts               ← paramSignal() factory (signals API)
+    param-signal-group.ts         ← paramSignalGroup() factory (signals API)
     serializers.spec.ts           ← unit tests: serializers
     param-control.spec.ts         ← unit tests: paramControl (hydration, sync, SSR, cleanup)
     param-group.spec.ts           ← unit tests: paramGroup (structure, sync, cleanup)
@@ -96,9 +105,13 @@ npx ng build
 
 ## Key Design Decisions
 
-**Injection context requirement.** `paramControl()` and `paramGroup()` call Angular's `inject()` internally, so they must be invoked inside an injection context — typically a component class field initializer or constructor. There is no service or `NgModule` to provide.
+**Injection context requirement.** All four factories (`paramControl`, `paramGroup`, `paramSignal`, `paramSignalGroup`) call Angular's `inject()` internally, so they must be invoked inside an injection context — typically a component class field initializer or constructor. There is no service or `NgModule` to provide.
 
 **URL → control uses `ActivatedRoute.queryParamMap`.** This covers both initial navigation and subsequent back/forward/external navigations. The setValue call uses `{ emitEvent: false }` to prevent the control→URL subscriber from re-triggering a navigation.
+
+**Signal → URL uses `toObservable()`.** `paramSignal` bridges the signals world back to RxJS using `toObservable` from `@angular/core/rxjs-interop`. This allows reuse of the same `debounceTime` + `distinctUntilChanged` pipeline used by `paramControl`. The initial emission is skipped via `skip(1)` since the snapshot already reflects the URL state. Because `toObservable` relies on an effect internally, it must (and does) run in an injection context.
+
+**URL → signal avoids redundant updates.** The `queryParamMap` subscriber compares the incoming value against the current signal value with `JSON.stringify` before calling `sig.set()`, preventing unnecessary effect re-runs in the component tree.
 
 **Control → URL is skipped on SSR.** The factory checks `PLATFORM_ID` via `isPlatformBrowser`. On a server platform the subscription that calls `router.navigate()` is never set up, so no DOM-dependent code runs.
 
