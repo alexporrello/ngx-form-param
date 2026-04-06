@@ -1,45 +1,45 @@
 /* To learn more about Typescript configuration file: https://www.typescriptlang.org/docs/handbook/tsconfig-json.html. */
 /* To learn more about Angular compiler options: https://angular.dev/reference/configs/angular-compiler-options. */
 {
-  "compileOnSave": false,
-  "compilerOptions": {
-    "strict": true,
-    "noImplicitOverride": true,
-    "noPropertyAccessFromIndexSignature": true,
-    "noImplicitReturns": true,
-    "paths": {
-      "ngx-param-control": [
-        "./dist/ngx-param-control"
-      ]
+    "compileOnSave": false,
+    "compilerOptions": {
+        "strict": true,
+        "noImplicitOverride": true,
+        "noPropertyAccessFromIndexSignature": true,
+        "noImplicitReturns": true,
+        "paths": {
+            "ngx-param-control": [
+                "./projects/ngx-param-control/src/public-api.ts"
+            ]
+        },
+        "noFallthroughCasesInSwitch": true,
+        "skipLibCheck": true,
+        "isolatedModules": true,
+        "experimentalDecorators": true,
+        "importHelpers": true,
+        "target": "ES2022",
+        "module": "preserve"
     },
-    "noFallthroughCasesInSwitch": true,
-    "skipLibCheck": true,
-    "isolatedModules": true,
-    "experimentalDecorators": true,
-    "importHelpers": true,
-    "target": "ES2022",
-    "module": "preserve"
-  },
-  "angularCompilerOptions": {
-    "enableI18nLegacyMessageIdFormat": false,
-    "strictInjectionParameters": true,
-    "strictInputAccessModifiers": true,
-    "typeCheckHostBindings": true,
-    "strictTemplates": true
-  },
-  "files": [],
-  "references": [
-    {
-      "path": "./tsconfig.app.json"
+    "angularCompilerOptions": {
+        "enableI18nLegacyMessageIdFormat": false,
+        "strictInjectionParameters": true,
+        "strictInputAccessModifiers": true,
+        "typeCheckHostBindings": true,
+        "strictTemplates": true
     },
-    {
-      "path": "./tsconfig.spec.json"
-    },
-    {
-      "path": "./projects/ngx-param-control/tsconfig.lib.json"
-    },
-    {
-      "path": "./projects/ngx-param-control/tsconfig.spec.json"
-    }
-  ]
+    "files": [],
+    "references": [
+        {
+            "path": "./tsconfig.app.json"
+        },
+        {
+            "path": "./tsconfig.spec.json"
+        },
+        {
+            "path": "./projects/ngx-param-control/tsconfig.lib.json"
+        },
+        {
+            "path": "./projects/ngx-param-control/tsconfig.spec.json"
+        }
+    ]
 }

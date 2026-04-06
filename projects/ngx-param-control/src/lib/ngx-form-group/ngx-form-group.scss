@@ -1,0 +1,34 @@
+ngx-form-group {
+    display: flex;
+    border: solid 1px var(--mat-sys-outline);
+    border-radius: var(--mat-sys-corner-medium);
+    overflow: hidden;
+
+    mat-select:has(+ mat-select),
+    mat-select:has(+ input) {
+        border-right: solid 1px var(--mat-sys-outline);
+    }
+
+    .mat-mdc-select {
+        padding: var(--mat-sys-corner-small);
+        font: var(--mat-sys-body-medium) !important;
+        background: var(--mat-sys-surface-container);
+    }
+
+    .mat-mdc-select-value {
+        padding-right: 8px;
+    }
+
+    .mat-mdc-select-trigger {
+        max-width: 160px;
+    }
+
+    input {
+        font: var(--mat-sys-label-large) !important;
+        outline: none;
+        border: 0;
+        background: var(--mat-sys-surface-container);
+        padding: var(--mat-sys-corner-small);
+    }
+    
+}
